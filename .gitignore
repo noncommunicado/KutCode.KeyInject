@@ -1,0 +1,15 @@
+**/DeployPackage/
+**/bin/
+**/obj/
+**/.vs/
+*.suo
+*.orig
+*.user
+*.svclog
+.Debug.
+Web.Debug.config
+Web.Release.config
+/.vs
+.idea
+appsettings.[Dd]evelopment.json
+.DS_Store
