@@ -1,8 +1,13 @@
-# <img src="./img/logo.png" style="width: 30px" /> KutCode.KeyInject
+<h1>
+	<img src="./img/logo.png" style="width: 50px; border: 1px solid grey;" /> 
+	<span>KutCode.KeyInject</span>
+</h1>
 
-`KutCode.KeyInject` is a .NET library designed to inject values into configurations using regular expression patterns, with support for nested patterns. This facilitates dynamic and flexible configuration management in .NET applications.
+`KutCode.KeyInject` is a .NET library designed to inject values into configurations using regular expression patterns, with support for nested patterns.   
+This facilitates dynamic and flexible configuration management in .NET applications.
 
 <h2 id="toc">📋 Table of contents</h2>
+
 - [🧩 Features](#features)  
 - [📜 Installation](#installation)  
 - [🚀 Quick Start](#quick-start)  
@@ -11,7 +16,8 @@
 - [🎭 Patterns](#patterns)  
 - [🪆 Nested patterns](#nested-patterns)  
 - [💉 Dependency Injection](#di)  
-- [☕ Contribution](#contribution)  
+- [☕ Contribution](#contribution)
+
 
 <h2 id="features">🧩 Features</h2>
 
@@ -52,7 +58,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("appsettings.json");
 builder.Configuration.AddEnvironmentVariables();
 builder.Configuration.AddVault();
-// ✅ Exactly at last position add Key Injection 
+// ✅ Add Key Injection exactly at the latest position 
 builder.Configuration.AddKeyInject();
 
 var app = builder.Build();
@@ -61,7 +67,7 @@ await app.RunAsync();
 ```
 
 <h2 id="basic-config">⚙️ Basic Configuration</h2>
-<h3 id="from-appsettings">From `appsettings.json`</h3>
+<h3 id="from-appsettings">From appsettings.json</h3>
 
 KeyInject always enriches from `appsettings.json`.  
 It's not neccessary to provide json configuration.  
@@ -120,31 +126,38 @@ You must to specify `?<key>` regex group in pattern, like:
 <h2 id="nested-patterns">🪆 Nested patterns</h2>
 
 You can use nested patterns, here is an example of nesting:
+1. In `appsettings.json`
 ```json  
-// in appsettings.json
 {
   "Connection": "${CONN}"
 }
 ```
-In Environment variable:
-```text  
+2. In Environment variable:
+```env  
 CONN="server=${DB_IP};user=${DB_USER};password=${DB_PASSWORD}"
 ```
-In Vault config sourcer (or any other):
-```text  
+3. In Vault config sourcer (or any other):
+```env  
 DB_IP=1.2.3.4
 DB_USER=rootuser
 DB_PASSWORD=password123
 ```
-_And so on..._  
-Default supported nesting for `5 levels`, and it's enough for most cases.  
-You can change it with:
+4. Result configuration string will be:
+```csharp
+void DisplayConfig(IConfiguration config) {
+	Console.WriteLine(config["Connection"]);
+	// ✅ Output: server=1.2.3.4;user=rootuser;password=password123
+}
+```
+
+⚠️ Default supported nesting for `5 levels`, and it's enough for most cases.  
+You can change levels count with:
 ```
 Configuration.AddKeyInject(b 
     => b.SetReplaceRepeatCount(10)
 );
 ```
-or with `appsettings.json`:
+or in `appsettings.json`:
 ```json
 {
   "KeyInject": {
