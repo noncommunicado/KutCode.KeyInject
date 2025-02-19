@@ -1,5 +1,5 @@
 <h1>
-	<img src="./img/logo.png" style="width: 50px; border: 1px solid grey;" /> 
+	<img src="icon.png" style="width: 50px; border: 1px solid grey;" /> 
 	<span>KeyInject</span>
 </h1>
 
@@ -45,7 +45,7 @@ All versions can be found [here](https://www.nuget.org/packages/KeyInject/).
 
 <h2 id="quick-start">🚀 Quick Start</h2>
 
-See actual examples here [./examples](./examples);
+Look at actual examples here [./examples](./examples);
 
 <h3 id="basic-example">Basic example</h3>
 
@@ -57,7 +57,7 @@ In `appsettings.json`:
   }
 }
 ```
-In Environment variables we got:
+In Environment variables:
 ```env
 SERVER=1.4.8.8
 DB_USER=root-user

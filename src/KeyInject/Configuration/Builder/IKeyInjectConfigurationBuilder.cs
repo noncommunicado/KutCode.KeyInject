@@ -3,6 +3,9 @@ using KeyInject.Configuration.Models;
 
 namespace KeyInject.Configuration.Builder;
 
+/// <summary>
+/// KeyInject simple configuration builder
+/// </summary>
 public interface IKeyInjectConfigurationBuilder
 {
 	IKeyInjectConfigurationBuilder EnrichFromAppSettings(IConfiguration section);

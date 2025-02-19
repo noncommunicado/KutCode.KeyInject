@@ -1,5 +1,5 @@
 <h1>
-	<img src="./img/logo.png" style="width: 50px; border: 1px solid grey;" /> 
+	<img src="icon.png" style="width: 50px; border: 1px solid grey;" /> 
 	<span>KeyInject</span>
 </h1>
 
@@ -8,15 +8,15 @@ This facilitates dynamic and flexible configuration management in .NET applicati
 
 <h2 id="toc">📋 Table of contents</h2>
 
-- [🧩 Features](#features)  
-- [📜 Installation](#installation)  
-- [🚀 Quick Start](#quick-start)  
-  - [Basic example](#basic-example)  
-- [⚙️ Basic Configuration](#basic-config)  
+- [🧩 Features](#features)
+- [📜 Installation](#installation)
+- [🚀 Quick Start](#quick-start)
+  - [Basic example](#basic-example)
+- [⚙️ Basic Configuration](#basic-config)
 - [🔑 Key Prefix](#key-prefix)
-- [🎭 Patterns](#patterns)  
-- [🪆 Nested patterns](#nested-patterns)  
-- [💉 Dependency Injection](#di)  
+- [🎭 Patterns](#patterns)
+- [🪆 Nested patterns](#nested-patterns)
+- [💉 Dependency Injection](#di)
 - [☕ Contribution](#contribution)
 
 
@@ -45,7 +45,7 @@ All versions can be found [here](https://www.nuget.org/packages/KeyInject/).
 
 <h2 id="quick-start">🚀 Quick Start</h2>
 
-See actual examples here [./examples](./examples);
+Look at actual examples here [./examples](./examples);
 
 <h3 id="basic-example">Basic example</h3>
 
@@ -57,7 +57,7 @@ In `appsettings.json`:
   }
 }
 ```
-In Environment variables we got:
+In Environment variables:
 ```env
 SERVER=1.4.8.8
 DB_USER=root-user
@@ -127,12 +127,12 @@ _(All the patterns will be described below)_
 ```
 Extended configuration see in [💉 Dependency Injection](#di) part.
 
-<h2 id="key-prefix">🔑 Key Prefix</h2>  
+<h2 id="key-prefix">🔑 Key Prefix</h2>
 
 Prefixes used to specify that we only want to replace keys starts with some value.  
 In example, for configured prefix `DB_`:  
 🚫 `DATABASE_USER_PASSWORD` - wont be replaced  
-✅ `DB_USER_PASSWORD` - will be replaced  
+✅ `DB_USER_PASSWORD` - woill be replaced
 
 > 💡Notice!  
 > If you specified prefixes, then only those patterns that start with this prefix will be replaced.
@@ -156,21 +156,21 @@ Or with appsettings:
   }
 }
 ```
-  
+
 
 
 <h2 id="patterns">🎭 Patterns</h2>
 <h3 id="preset-patterns">Preset patterns</h3>
 
 💡 Here is six default pattern names:  
-`${_}`&nbsp;&nbsp;&nbsp;&nbsp;&ensp;
+`${_}`&nbsp;&nbsp;&nbsp;&nbsp;&ensp;&ensp;
 `{{_}}`&nbsp;&nbsp;&nbsp;&nbsp;
 `$<_>`  
 `<<_>>`&nbsp;&nbsp;&nbsp;&nbsp;
 `!{_}!`&nbsp;&nbsp;&nbsp;&nbsp;
-`%_%`  
+`%_%`
 
-Can be registered with: 
+Can be registered with:
 ```csharp
 WebApplication.CreateBuilder(args)
     .Configuration.AddKeyInject(b => b
@@ -192,8 +192,8 @@ Or with appsettings:
 
 Their detailed description:
 1. `${_}`
-  - regex: `\$\{(?<key>[^\{\}]+)\}`
-  - example: `${SOMEKEY}`, `${some_key_2}`
+- regex: `\$\{(?<key>[^\{\}]+)\}`
+- example: `${SOMEKEY}`, `${some_key_2}`
 2. `{{_}}`
 - regex: `\{\{(?<key>[^\{\}]+)\}\}`
 - example: `{{SOMEKEY}}`, `{{some_key_2}}`
@@ -209,11 +209,11 @@ Their detailed description:
 6. `%_%`
 - regex: `%(?<key>[^%]+)%`
 - example: `%SOMEKEY%`, `%some_key_2%`
-  
+
 > ⚠️ Notice!  
 > You must specify preset pattern name exactly in provided format!  
-> Pattern names like `"${...}"` instead of `${_}` **is not supported**!  
-  
+> Pattern names like `"${...}"` instead of `${_}` **is not supported**!
+
 Of course, you can use multiple patterns at the same time.
 
 <h3 id="custom-patterns">🔧 Custom patterns</h3>
@@ -223,7 +223,7 @@ You must to specify `?<key>` regex group in pattern, like:
 ```regexp  
 !\{(?<key>[^{}]+)\}!
 ```
-> ⚠️ Group naming must be exactly: `key`  
+> ⚠️ Group naming must be exactly: `key`
 
 Custom pattern registration examples:
 - `appsettings.json` :
@@ -276,7 +276,7 @@ void DisplayConfig(IConfiguration config) {
 }
 ```
 
-> ⚠️ Default supported nesting for `5 levels`, and it's enough for most cases.  
+> ⚠️ Default supported nesting for `5 levels`, and it's enough for most cases.
 
 You can change levels count with:
 ```csharp
