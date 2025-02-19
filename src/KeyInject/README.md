@@ -1,9 +1,9 @@
 <h1>
-	<img src="./img/logo.png" style="width: 50px; border: 1px solid grey;" /> 
-	<span>KutCode.KeyInject</span>
+	<img src="icon.png" style="width: 50px; border: 1px solid grey;" /> 
+	<span>KeyInject</span>
 </h1>
 
-`KutCode.KeyInject` is a .NET library designed to inject values into configurations using regular expression patterns, with support for nested patterns.   
+`KeyInject` is a .NET library designed to inject values into configurations using regular expression patterns, with support for nested patterns.   
 This facilitates dynamic and flexible configuration management in .NET applications.
 
 <h2 id="toc">📋 Table of contents</h2>
@@ -11,7 +11,7 @@ This facilitates dynamic and flexible configuration management in .NET applicati
 - [🧩 Features](#features)
 - [📜 Installation](#installation)
 - [🚀 Quick Start](#quick-start)
-    - [Basic example](#basic-example)
+  - [Basic example](#basic-example)
 - [⚙️ Basic Configuration](#basic-config)
 - [🎭 Patterns](#patterns)
 - [🪆 Nested patterns](#nested-patterns)
@@ -28,19 +28,19 @@ This facilitates dynamic and flexible configuration management in .NET applicati
 
 <h2 id="installation">📜 Installation</h2>
 
-Install `KutCode.KeyInject` using NuGet Package Manager:
+Install `KeyInject` using NuGet Package Manager:
 
 ```powershell
-Install-Package KutCode.KeyInject
+Install-Package KeyInject
 ```
 
 Or via the .NET CLI:
 
 ```shell
-dotnet add package KutCode.KeyInject
+dotnet add package KeyInject
 ```
 
-All versions can be found [here](https://www.nuget.org/packages/KutCode.KeyInject/).
+All versions can be found [here](https://www.nuget.org/packages/KeyInject/).
 
 <h2 id="quick-start">🚀 Quick Start</h2>
 
@@ -81,7 +81,7 @@ var app = builder.Build();
 
 var conn = app.Configuration.GetConnectionString("Main");
 await Console.Out.WriteLineAsync(conn);
-// output: server=1.4.8.8;user=root-user;password=12345qwe_dontdothat
+// ✅ Output: server=1.4.8.8;user=root-user;password=12345qwe_dontdothat
 
 await app.RunAsync();
 ```
@@ -105,6 +105,9 @@ _(All the patterns will be described below)_
     // if Patterns is empty, "${_}" pattern will be used anyway
     "Patterns": [
       "${_}", "{{_}}", "$<_>", "<<_>>", "!{_}!", "%_%"
+    ],
+    "RegexPatterns": [
+      "!\\{(?<key>[^{}]+)\\}!"
     ],
     "KeyPrefixes": [
       "PRE_", "DB_"
@@ -139,24 +142,45 @@ By default few patterns are supported:
 - example: `%SOMEKEY%`, `%some_key_2%`
 
 
-⚠️ Notice! You must specify them exactly in provided format!  
-Pattern like `"${...}"` instead of `${_}` is not supported!
+> ⚠️ Notice! You must specify them exactly in provided format!  
+> Pattern like `"${...}"` instead of `${_}` is not supported!
 
 Of course, you can use multiple patterns at the same time.
 
 <h3 id="custom-patterns">🔧 Custom patterns</h3>
 
-You can use custom Regex patterns with builder or appsettings configuration.  
+You can use custom `Regex` patterns with builder or `appsettings` configuration.  
 You must to specify `?<key>` regex group in pattern, like:
 ```regexp  
 !\{(?<key>[^{}]+)\}!
 ```
-⚠️ Group naming must be exactly - `key`.
+> ⚠️ Group naming must be exactly - `key`.
+
+Custom pattern registration examples:
+- `appsettings.json` :
+```json
+{
+  "RegexPatterns": [
+    "!\\{(?<key>[^{}]+)\\}!"
+  ]
+}
+```
+- with DI builder:
+```csharp
+builder.Configuration.AddKeyInject(b => b
+	// adding custom regex pattern. Warn! Must to use ?<key> regex group, see documentation.
+	// no exception throw on bad regex.
+	.AddRegexPattern(@"!\{(?<key>[^{}]+)\}!")
+	// notice, adding built Regex CAN throw exception if regex text was incorrect
+	.AddRegexPattern(new Regex(@"!\{(?<key>[^{}]+)\}!"))
+);
+```
 
 
 <h2 id="nested-patterns">🪆 Nested patterns</h2>
 
-You can use nested patterns, here is an example of nesting:
+You can use nested patterns, by default supports 5 levels of nesting.   
+Here is an example of nesting:
 1. In `appsettings.json`
 ```json  
 {
@@ -181,7 +205,8 @@ void DisplayConfig(IConfiguration config) {
 }
 ```
 
-⚠️ Default supported nesting for `5 levels`, and it's enough for most cases.  
+> ⚠️ Default supported nesting for `5 levels`, and it's enough for most cases.
+
 You can change levels count with:
 ```
 Configuration.AddKeyInject(b 
@@ -212,7 +237,10 @@ builder.Configuration.AddKeyInject(b => b
 	.AddKeyPrefix("PRE_")
 	.AddKeyPrefix("DATABASE_")
 	// adding custom regex pattern. Warn! Must to use ?<key> regex group, see documentation.
+	// no exception throw on bad regex.
 	.AddRegexPattern(@"!\{(?<key>[^{}]+)\}!")
+	// notice, adding built Regex CAN throw exception if regex text was incorrect
+	.AddRegexPattern(new Regex(@"!\{(?<key>[^{}]+)\}!"))
 	// from prest patterns ${_}, <<_>> ...
 	.AddPresetPattern("${_}")
 	// set how many time config will be injected to resolve circular dependencies

@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using KeyInject;
 using KeyInject.DependencyInjectionExample;
 
@@ -12,7 +13,10 @@ builder.Configuration.AddKeyInject(b => b
 	.AddKeyPrefix("PRE_")
 	.AddKeyPrefix("DATABASE_")
 	// adding custom regex pattern. Warn! Must to use ?<key> regex group, see documentation.
+	// no exception throw on bad regex.
 	.AddRegexPattern(@"!\{(?<key>[^{}]+)\}!")
+	// notice, adding built Regex CAN throw exception if regex text was incorrect
+	.AddRegexPattern(new Regex(@"!\{(?<key>[^{}]+)\}!"))
 	// from prest patterns ${_}, <<_>> ...
 	.AddPresetPattern("${_}")
 	// set how many time config will be injected to resolve circular dependencies
