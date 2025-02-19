@@ -132,7 +132,7 @@ Extended configuration see in [💉 Dependency Injection](#di) part.
 Prefixes used to specify that we only want to replace keys starts with some value.  
 In example, for configured prefix `DB_`:  
 🚫 `DATABASE_USER_PASSWORD` - wont be replaced  
-✅ `DB_USER_PASSWORD` - woill be replaced  
+✅ `DB_USER_PASSWORD` - will be replaced  
 
 > 💡Notice!  
 > If you specified prefixes, then only those patterns that start with this prefix will be replaced.
