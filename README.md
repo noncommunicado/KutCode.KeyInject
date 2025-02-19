@@ -163,7 +163,7 @@ Or with appsettings:
 <h3 id="preset-patterns">Preset patterns</h3>
 
 💡 Here is six default pattern names:  
-`${_}`&nbsp;&nbsp;&nbsp;&nbsp;&ensp;&ensp;
+`${_}`&nbsp;&nbsp;&nbsp;&nbsp;&ensp;
 `{{_}}`&nbsp;&nbsp;&nbsp;&nbsp;
 `$<_>`  
 `<<_>>`&nbsp;&nbsp;&nbsp;&nbsp;
