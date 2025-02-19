@@ -1,9 +1,9 @@
 <h1>
 	<img src="./img/logo.png" style="width: 50px; border: 1px solid grey;" /> 
-	<span>KutCode.KeyInject</span>
+	<span>KeyInject</span>
 </h1>
 
-`KutCode.KeyInject` is a .NET library designed to inject values into configurations using regular expression patterns, with support for nested patterns.   
+`KeyInject` is a .NET library designed to inject values into configurations using regular expression patterns, with support for nested patterns.   
 This facilitates dynamic and flexible configuration management in .NET applications.
 
 <h2 id="toc">📋 Table of contents</h2>
@@ -28,19 +28,19 @@ This facilitates dynamic and flexible configuration management in .NET applicati
 
 <h2 id="installation">📜 Installation</h2>
 
-Install `KutCode.KeyInject` using NuGet Package Manager:
+Install `KeyInject` using NuGet Package Manager:
 
 ```powershell
-Install-Package KutCode.KeyInject
+Install-Package KeyInject
 ```
 
 Or via the .NET CLI:
 
 ```shell
-dotnet add package KutCode.KeyInject
+dotnet add package KeyInject
 ```
 
-All versions can be found [here](https://www.nuget.org/packages/KutCode.KeyInject/).
+All versions can be found [here](https://www.nuget.org/packages/KeyInject/).
 
 <h2 id="quick-start">🚀 Quick Start</h2>
 
