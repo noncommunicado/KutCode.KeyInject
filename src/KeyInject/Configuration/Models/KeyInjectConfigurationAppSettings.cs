@@ -12,7 +12,6 @@ public sealed record KeyInjectConfigurationAppSettings
 	/// </summary>
 	[DefaultValue(true)]
 	public bool Enabled { get; init; } = true;
-	
 	public int? ReplaceRepeatCount { get; init; }
 	public bool? IgnoreCase { get; init; }
 	public string[]? KeyPrefixes { get; init; }

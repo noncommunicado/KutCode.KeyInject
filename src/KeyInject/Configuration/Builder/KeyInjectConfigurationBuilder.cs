@@ -7,38 +7,31 @@ namespace KeyInject.Configuration.Builder;
 /// <summary>
 /// Simple builder for <see cref="KeyInjectConfiguration"/>  
 /// </summary>
-public sealed class KeyInjectConfigurationBuilder : IKeyInjectConfigurationBuilder
+public sealed class KeyInjectConfigurationBuilder(IConfiguration configuration) : IKeyInjectConfigurationBuilder
 {
 	private readonly List<string> _pickedPresetPatterns = new();
 	private readonly List<string> _rawRegexPatterns = new();
+	private IConfiguration? _configurationSection = null;
 	private KeyInjectConfiguration _configurationResult = KeyInjectConfiguration.Default;
-
+	
 	/// <summary>
 	/// Enrich <see cref="KeyInjectConfiguration"/> with <see cref="IConfigurationSection"/> if provided.<br/>
 	/// If <see cref="IConfigurationSection"/> not provided, using <b>"KeyInject"</b> name.<br/><br/>
 	/// Warning! This method will overwrite <see cref="KeyInjectConfiguration"/> properties, and extend internal colletions.  
 	/// </summary>
-	internal IKeyInjectConfigurationBuilder EnrichFromAppSettings(IConfiguration section)
+	public IKeyInjectConfigurationBuilder EnrichFromAppSettings(IConfiguration? section)
 	{
-		var settings = section.Get<KeyInjectConfigurationAppSettings>();
-		if (settings is null) return this;
-
-		_configurationResult.IgnoreCase = settings.IgnoreCase.HasValue
-			? settings.IgnoreCase.Value : _configurationResult.IgnoreCase;
-		_configurationResult.ReplaceRepeatCount = settings.ReplaceRepeatCount.HasValue
-			? settings.ReplaceRepeatCount.Value : _configurationResult.ReplaceRepeatCount;
-		_configurationResult.KeyPrefixes.AddRange(
-			settings.KeyPrefixes?.Where(x => string.IsNullOrEmpty(x) is false) ?? []
-		);
-		_rawRegexPatterns.AddRange(
-			settings.RegexPatterns?.Where(x => string.IsNullOrEmpty(x) is false) ?? []
-		);
-		_pickedPresetPatterns.AddRange(
-			settings.Patterns?.Where(x => string.IsNullOrEmpty(x) is false) ?? []
-		);
+		if (section is null) return this;
+		_configurationSection = section;
 		return this;
 	}
-	
+	/// <inheritdoc cref="EnrichFromAppSettings(Microsoft.Extensions.Configuration.IConfiguration?)"/>
+	public IKeyInjectConfigurationBuilder EnrichFromAppSettings(Func<IConfiguration> configurationFunc)
+	{
+		EnrichFromAppSettings(configurationFunc.Invoke());
+		return this;
+	}
+
 	public IKeyInjectConfigurationBuilder SetEnabled(bool isEnabled)
 	{
 		_configurationResult.Enabled = isEnabled;
@@ -74,6 +67,8 @@ public sealed class KeyInjectConfigurationBuilder : IKeyInjectConfigurationBuild
 	
 	public KeyInjectConfiguration Build()
 	{
+		EnrichFromAppSettings();
+
 		// adding preset regex patterns from static internal dictionary 
 		foreach (var pattern in _pickedPresetPatterns)
 			if (InjectDefaults.PresetPatterns.TryGetValue(pattern.Trim(), out var presetRegex))
@@ -86,8 +81,30 @@ public sealed class KeyInjectConfigurationBuilder : IKeyInjectConfigurationBuild
 		// adding default regex - is default behavior of this package
 		if(_configurationResult.RegexPatterns.Count == 0)
 			_configurationResult.RegexPatterns.Add(InjectDefaults.DefaultRegex);
-		
+
 		return _configurationResult;
+	}
+	
+	private void EnrichFromAppSettings()
+	{
+		if (_configurationSection is null)
+			_configurationSection = configuration.GetSection(InjectDefaults.DefaultConfigurationSectionName);
+		var settings = _configurationSection.Get<KeyInjectConfigurationAppSettings>();
+		if (settings is null) return;
+
+		_configurationResult.IgnoreCase = settings.IgnoreCase.HasValue
+			? settings.IgnoreCase.Value : _configurationResult.IgnoreCase;
+		_configurationResult.ReplaceRepeatCount = settings.ReplaceRepeatCount.HasValue
+			? settings.ReplaceRepeatCount.Value : _configurationResult.ReplaceRepeatCount;
+		_configurationResult.KeyPrefixes.AddRange(
+			settings.KeyPrefixes?.Where(x => string.IsNullOrEmpty(x) is false) ?? []
+		);
+		_rawRegexPatterns.AddRange(
+			settings.RegexPatterns?.Where(x => string.IsNullOrEmpty(x) is false) ?? []
+		);
+		_pickedPresetPatterns.AddRange(
+			settings.Patterns?.Where(x => string.IsNullOrEmpty(x) is false) ?? []
+		);
 	}
 
 	public override string ToString() => _configurationResult.ToString();

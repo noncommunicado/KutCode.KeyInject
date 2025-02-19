@@ -5,6 +5,8 @@ namespace KeyInject.Configuration.Builder;
 
 public interface IKeyInjectConfigurationBuilder
 {
+	IKeyInjectConfigurationBuilder EnrichFromAppSettings(IConfiguration section);
+	IKeyInjectConfigurationBuilder EnrichFromAppSettings(Func<IConfiguration> configurationFunc);
 	IKeyInjectConfigurationBuilder SetEnabled(bool isEnabled);
 	IKeyInjectConfigurationBuilder SetReplaceRepeatCount(int maxReplaceRepeatCount);
 	IKeyInjectConfigurationBuilder SetIgnoreCase(bool ignoreCase);

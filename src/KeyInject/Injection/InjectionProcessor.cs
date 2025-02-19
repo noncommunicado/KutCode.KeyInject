@@ -8,6 +8,8 @@ internal sealed class InjectionProcessor(KeyInjectConfiguration injectConfig)
 {
 	private readonly InjectStringComparer _stringComparer = new(injectConfig);
 
+	public static InjectionProcessor Create(KeyInjectConfiguration injectConfig) => new(injectConfig);
+
 	public void Process(IConfigurationBuilder builder)
 	{
 		if (builder is not ConfigurationManager manager)
@@ -43,7 +45,8 @@ internal sealed class InjectionProcessor(KeyInjectConfiguration injectConfig)
 				.TryGetValue(InjectDefaults.RegexInjectionGroupKey, out var keyGroup);
 			if (presentedInMatch is false) continue;
 			// cleared key: "${Some_Key}" --> "Some_Key"
-			var key = keyGroup!.Value;
+			var key = injectConfig.IgnoreCase 
+				? keyGroup!.Value.ToLowerInvariant() : keyGroup!.Value;
 			// check for prefixe satisfy if presented
 			var prefixFilter =  injectConfig.KeyPrefixes.IsNullOrEmpty() || 
 				injectConfig.KeyPrefixes.Any(x 
@@ -74,7 +77,8 @@ internal sealed class InjectionProcessor(KeyInjectConfiguration injectConfig)
 			if (children.NotEmptyOrNull())
 				FlattenConfigurationSection(children, newCollection);
 			if (section.Value is null) continue;
-			var key = injectConfig.IgnoreCase ? section.Path.ToLower() : section.Path;
+			var key = injectConfig.IgnoreCase
+				? section.Path.ToLowerInvariant() : section.Path;
 			newCollection.Add(key, section);
 		}
 

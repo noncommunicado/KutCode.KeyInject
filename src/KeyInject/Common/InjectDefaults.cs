@@ -13,7 +13,7 @@ internal sealed class InjectDefaults
 	public static Dictionary<string, Regex> PresetPatterns = new() {
 		{DefaultRegexPatternRaw, new Regex(@"\$\{(?<key>[^\{\}]+)\}")},
 		{"{{_}}", new Regex(@"\{\{(?<key>[^\{\}]+)\}\}")},
-		{"<_>", new Regex(@"<(?<key>[^<>]+)>")},
+		{"$<_>", new Regex(@"\$<(?<key>[^<>]+)>")},
 		{"<<_>>", new Regex(@"<<(?<key>[^<>]+)>>")},
 		{"!{_}!", new Regex(@"!\{(?<key>[^{}]+)\}!")},
 		{"%_%", new Regex(@"%(?<key>[^%]+)%")},

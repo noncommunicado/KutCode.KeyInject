@@ -3,6 +3,7 @@ using FluentAssertions;
 using KeyInject.Common;
 using KeyInject.Configuration.Builder;
 using KeyInject.Configuration.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace KeyInject.Unit.Tests;
 
@@ -10,12 +11,14 @@ namespace KeyInject.Unit.Tests;
 public sealed class KeyInjectConfigurationBuilderTests
 {
 	private readonly KeyInjectConfiguration _defaultConfig = KeyInjectConfiguration.Default;
+	private KeyInjectConfigurationBuilder Builder { get; set; }
+	[SetUp]
+	public void SetUp() => Builder = new(new ConfigurationManager());
 	
 	[Test]
 	public void CallBuildOnly_OutDefaultValue_Test()
 	{
-		KeyInjectConfigurationBuilder builder = new();
-		var config = builder.Build();
+		var config = Builder.Build();
 		
 		config.Should().NotBeNull();
 		config.IgnoreCase.Should().Be(_defaultConfig.IgnoreCase);
@@ -28,9 +31,8 @@ public sealed class KeyInjectConfigurationBuilderTests
 	public void AddRawCorrectRegex_OutParsedRegex_Test()
 	{
 		var rawRegex = @"\$\{([^\{\}]+)\}";
-		KeyInjectConfigurationBuilder builder = new();
-		builder.AddRegexPattern(rawRegex);
-		var config = builder.Build();
+		Builder.AddRegexPattern(rawRegex);
+		var config = Builder.Build();
 		
 		config.Should().NotBeNull();
 		config.RegexPatterns.Should().HaveCount(1);
@@ -41,9 +43,8 @@ public sealed class KeyInjectConfigurationBuilderTests
 	public void AddBuiltRegex_OutParsedRegex_Test()
 	{
 		var rawRegex = new Regex(@"\$\{([^\{\}]+)\}");
-		KeyInjectConfigurationBuilder builder = new();
-		builder.AddRegexPattern(rawRegex);
-		var config = builder.Build();
+		Builder.AddRegexPattern(rawRegex);
+		var config = Builder.Build();
 		
 		config.Should().NotBeNull();
 		config.RegexPatterns.Should().ContainSingle(x => x == rawRegex);
@@ -53,9 +54,8 @@ public sealed class KeyInjectConfigurationBuilderTests
 	public void AddEmptyRegex_OutEmptyRegexs_Test()
 	{
 		var regex = "    ";
-		KeyInjectConfigurationBuilder builder = new();
-		builder.AddRegexPattern(regex);
-		var config = builder.Build();
+		Builder.AddRegexPattern(regex);
+		var config = Builder.Build();
 
 		config.Should().NotBeNull();
 		config.RegexPatterns.Should().ContainSingle(x => x == InjectDefaults.DefaultRegex);
@@ -65,9 +65,8 @@ public sealed class KeyInjectConfigurationBuilderTests
 	public void AddNotEmptyPrefix_OutPrefix_Test()
 	{
 		var prefix = "pre_";
-		KeyInjectConfigurationBuilder builder = new();
-		builder.AddKeyPrefix(prefix);
-		var config = builder.Build();
+		Builder.AddKeyPrefix(prefix);
+		var config = Builder.Build();
 		
 		config.Should().NotBeNull();
 		config.KeyPrefixes.Should().HaveCount(1);
@@ -78,9 +77,8 @@ public sealed class KeyInjectConfigurationBuilderTests
 	public void AddEmptyPrefix_OutEmptyPrefixes_Test()
 	{
 		var prefix = "    ";
-		KeyInjectConfigurationBuilder builder = new();
-		builder.AddKeyPrefix(prefix);
-		var config = builder.Build();
+		Builder.AddKeyPrefix(prefix);
+		var config = Builder.Build();
 		
 		config.Should().NotBeNull();
 		config.KeyPrefixes.Should().BeEmpty();

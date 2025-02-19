@@ -12,8 +12,8 @@ public static class KeyInjectConfigurationExtensions
 	public static IConfigurationBuilder AddKeyInject(
 		this IConfigurationBuilder manager)
 	{
-		var injectBuilder = new KeyInjectConfigurationBuilder();
-		injectBuilder.EnrichFromAppSettings(manager.Build());
+		var configuration = manager.Build();
+		var injectBuilder = new KeyInjectConfigurationBuilder(configuration);
 		return manager.Add(new KeyInjectConfigurationSource(injectBuilder.Build()));
 	}
 	
@@ -25,8 +25,8 @@ public static class KeyInjectConfigurationExtensions
 		this IConfigurationBuilder manager,
 		Func<IKeyInjectConfigurationBuilder, IKeyInjectConfigurationBuilder> builder)
 	{
-		var injectBuilder = new KeyInjectConfigurationBuilder();
-		injectBuilder.EnrichFromAppSettings(manager.Build());
+		var configuration = manager.Build();
+		var injectBuilder = new KeyInjectConfigurationBuilder(configuration);
 		return manager.Add(new KeyInjectConfigurationSource(
 			builder.Invoke(injectBuilder).Build())
 		);
