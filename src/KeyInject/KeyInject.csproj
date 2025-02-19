@@ -8,7 +8,7 @@
         <Description>Inject values in application configuration by Regex patterns with nesting support</Description>
         <Copyright>Kutumov Nikita, 2025</Copyright>
         <PackageProjectUrl>https://github.com/noncommunicado/KutCode.KeyInject</PackageProjectUrl>
-        <PackageIcon>img\logo.png</PackageIcon>
+        <PackageIcon>icon.png</PackageIcon>
         <RepositoryUrl>https://github.com/noncommunicado/KutCode.KeyInject</RepositoryUrl>
         <PackageTags>KeyInject, Configuration, Placeholder, Replace</PackageTags>
         <AssemblyVersion>0.0.1</AssemblyVersion>
@@ -29,6 +29,9 @@
       <Content Include="README.md">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="icon.png" Pack="true" PackagePath=""/>
     </ItemGroup>
 
 </Project>

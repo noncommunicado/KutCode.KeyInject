@@ -14,5 +14,6 @@ await Console.Out.WriteLineAsync(app.Configuration["key-3"]);
 await Console.Out.WriteLineAsync(app.Configuration["key-4"]);
 await Console.Out.WriteLineAsync(app.Configuration["key-5"]);
 await Console.Out.WriteLineAsync(app.Configuration["key-6"]);
+await Console.Out.WriteLineAsync(app.Configuration["key-7"]);
 
 // await app.RunAsync();

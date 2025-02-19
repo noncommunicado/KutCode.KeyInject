@@ -16,6 +16,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{6B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyInject.DefaultExample", "examples\KeyInject.DefaultExample\KeyInject.DefaultExample.csproj", "{B07E6349-A1CF-4DAE-9CA0-B189E9CF41C3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyInject.DependencyInjectionExample", "examples\KeyInject.DependencyInjectionExample\KeyInject.DependencyInjectionExample.csproj", "{16189B42-4366-4985-B5A8-4A84D2DA14E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,6 +44,10 @@ Global
 		{B07E6349-A1CF-4DAE-9CA0-B189E9CF41C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B07E6349-A1CF-4DAE-9CA0-B189E9CF41C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B07E6349-A1CF-4DAE-9CA0-B189E9CF41C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16189B42-4366-4985-B5A8-4A84D2DA14E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16189B42-4366-4985-B5A8-4A84D2DA14E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16189B42-4366-4985-B5A8-4A84D2DA14E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16189B42-4366-4985-B5A8-4A84D2DA14E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{0AD87730-1D03-47B5-983E-31AE26ECEA75} = {3B041C92-1AD0-4B0E-9B3B-AF80ED55FE3B}
@@ -49,5 +55,6 @@ Global
 		{999173F2-5EB5-45C9-835B-0B6619C54FCA} = {FACC477F-0DC4-45F0-AFE3-5D6857E26413}
 		{B2DCEC60-622B-47DB-9FFE-FECAC3F785EA} = {6BFAC976-443C-4DE7-BA2A-148E747F69AF}
 		{B07E6349-A1CF-4DAE-9CA0-B189E9CF41C3} = {6BFAC976-443C-4DE7-BA2A-148E747F69AF}
+		{16189B42-4366-4985-B5A8-4A84D2DA14E8} = {6BFAC976-443C-4DE7-BA2A-148E747F69AF}
 	EndGlobalSection
 EndGlobal

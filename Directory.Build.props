@@ -1,0 +1,6 @@
+<Project>
+    <PropertyGroup>
+        <Nullable>annotations</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+</Project>

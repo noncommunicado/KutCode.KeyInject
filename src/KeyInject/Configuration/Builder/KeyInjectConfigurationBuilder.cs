@@ -26,9 +26,9 @@ public sealed class KeyInjectConfigurationBuilder(IConfiguration configuration) 
 		return this;
 	}
 	/// <inheritdoc cref="EnrichFromAppSettings(Microsoft.Extensions.Configuration.IConfiguration?)"/>
-	public IKeyInjectConfigurationBuilder EnrichFromAppSettings(Func<IConfiguration> configurationFunc)
+	public IKeyInjectConfigurationBuilder EnrichFromAppSettings(Func<IConfiguration, IConfiguration> configurationFunc)
 	{
-		EnrichFromAppSettings(configurationFunc.Invoke());
+		EnrichFromAppSettings(configurationFunc.Invoke(configuration));
 		return this;
 	}
 
