@@ -1,5 +1,5 @@
 <h1>
-	<img src="icon.png" style="width: 50px; border: 1px solid grey;" /> 
+	<img src="./img/logo.png" style="width: 50px; border: 1px solid grey;" /> 
 	<span>KeyInject</span>
 </h1>
 
@@ -13,6 +13,7 @@ This facilitates dynamic and flexible configuration management in .NET applicati
 - [🚀 Quick Start](#quick-start)
   - [Basic example](#basic-example)
 - [⚙️ Basic Configuration](#basic-config)
+- [🔑 Key Prefix](#key-prefix)
 - [🎭 Patterns](#patterns)
 - [🪆 Nested patterns](#nested-patterns)
 - [💉 Dependency Injection](#di)
@@ -99,18 +100,26 @@ _(All the patterns will be described below)_
 ```json
 {
   "KeyInject": {
+    // simply enable or disable globally 
     "Enabled": true,
+    // ignore case of pattern key group >> ${IgNore_Case_Of_thIs_woRD}
     "IgnoreCase": true,
+    // set how many time config will be injected to resolve circular dependencies
     "ReplaceRepeatCount": 10,
+    // from preset patterns ${_}, <<_>> ...
     // if Patterns is empty, "${_}" pattern will be used anyway
     "Patterns": [
       "${_}", "{{_}}", "$<_>", "<<_>>", "!{_}!", "%_%"
     ],
+    // adding custom regex pattern. 
+    // warn! must use ?<key> regex group, see documentation.
+    // no exception throw on bad regex.
     "RegexPatterns": [
       "!\\{(?<key>[^{}]+)\\}!"
     ],
+    // adding custom prefixes
     "KeyPrefixes": [
-      "PRE_", "DB_"
+      "PRE_", "DATABASE_"
     ]
   }
 }
@@ -118,10 +127,70 @@ _(All the patterns will be described below)_
 ```
 Extended configuration see in [💉 Dependency Injection](#di) part.
 
+<h2 id="key-prefix">🔑 Key Prefix</h2>
+
+Prefixes used to specify that we only want to replace keys starts with some value.  
+In example, for configured prefix `DB_`:  
+🚫 `DATABASE_USER_PASSWORD` - wont be replaced  
+✅ `DB_USER_PASSWORD` - woill be replaced
+
+> 💡Notice!  
+> If you specified prefixes, then only those patterns that start with this prefix will be replaced.
+
+Can be registered with:
+
+```csharp
+WebApplication.CreateBuilder(args)
+    .Configuration.AddKeyInject(b => b
+        .AddKeyPrefix("PRE_")
+        .AddKeyPrefix("DATABASE_")
+);
+```
+Or with appsettings:
+```json
+{
+  "KeyInject": {
+    "KeyPrefixes": [
+      "PRE_", "DATABASE_"
+    ]
+  }
+}
+```
+
+
+
 <h2 id="patterns">🎭 Patterns</h2>
 <h3 id="preset-patterns">Preset patterns</h3>
 
-By default few patterns are supported:
+💡 Here is six default pattern names:  
+`${_}`&nbsp;&nbsp;&nbsp;&nbsp;&ensp;&ensp;
+`{{_}}`&nbsp;&nbsp;&nbsp;&nbsp;
+`$<_>`  
+`<<_>>`&nbsp;&nbsp;&nbsp;&nbsp;
+`!{_}!`&nbsp;&nbsp;&nbsp;&nbsp;
+`%_%`
+
+Can be registered with:
+```csharp
+WebApplication.CreateBuilder(args)
+    .Configuration.AddKeyInject(b => b
+        .AddPresetPattern("${_}")
+        .AddPresetPattern("$<_>")
+);
+```
+Or with appsettings:
+```json
+{
+  "KeyInject": {
+    "Patterns": [
+      "${_}", "{{_}}", "$<_>", "<<_>>", "!{_}!", "%_%"
+    ]
+  }
+}
+```
+> ⚠️ If no Pattern presented in explicit configuration will be used default: `${_}`
+
+Their detailed description:
 1. `${_}`
 - regex: `\$\{(?<key>[^\{\}]+)\}`
 - example: `${SOMEKEY}`, `${some_key_2}`
@@ -141,9 +210,9 @@ By default few patterns are supported:
 - regex: `%(?<key>[^%]+)%`
 - example: `%SOMEKEY%`, `%some_key_2%`
 
-
-> ⚠️ Notice! You must specify them exactly in provided format!  
-> Pattern like `"${...}"` instead of `${_}` is not supported!
+> ⚠️ Notice!  
+> You must specify preset pattern name exactly in provided format!  
+> Pattern names like `"${...}"` instead of `${_}` **is not supported**!
 
 Of course, you can use multiple patterns at the same time.
 
@@ -154,15 +223,17 @@ You must to specify `?<key>` regex group in pattern, like:
 ```regexp  
 !\{(?<key>[^{}]+)\}!
 ```
-> ⚠️ Group naming must be exactly - `key`.
+> ⚠️ Group naming must be exactly: `key`
 
 Custom pattern registration examples:
 - `appsettings.json` :
 ```json
 {
-  "RegexPatterns": [
-    "!\\{(?<key>[^{}]+)\\}!"
-  ]
+  "KeyInject": {
+    "RegexPatterns": [
+      "!\\{(?<key>[^{}]+)\\}!"
+    ]
+  }
 }
 ```
 - with DI builder:
@@ -191,7 +262,7 @@ Here is an example of nesting:
 ```env  
 CONN="server=${DB_IP};user=${DB_USER};password=${DB_PASSWORD}"
 ```
-3. In Vault config sourcer (or any other):
+3. In Vault config provider _(or some else provider too)_:
 ```env  
 DB_IP=1.2.3.4
 DB_USER=rootuser
@@ -208,7 +279,7 @@ void DisplayConfig(IConfiguration config) {
 > ⚠️ Default supported nesting for `5 levels`, and it's enough for most cases.
 
 You can change levels count with:
-```
+```csharp
 Configuration.AddKeyInject(b 
     => b.SetReplaceRepeatCount(10)
 );
@@ -224,8 +295,9 @@ or in `appsettings.json`:
 
 <h2 id="di">💉 Dependency Injection</h2>
 
-⚠️ Warning!  
-Use `.AddKeyInject()` after adding other Configuration Provides!
+>⚠️ Warning!  
+>Use `.AddKeyInject()` after other Configuration Provides!
+
 Example:
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
@@ -241,7 +313,7 @@ builder.Configuration.AddKeyInject(b => b
 	.AddRegexPattern(@"!\{(?<key>[^{}]+)\}!")
 	// notice, adding built Regex CAN throw exception if regex text was incorrect
 	.AddRegexPattern(new Regex(@"!\{(?<key>[^{}]+)\}!"))
-	// from prest patterns ${_}, <<_>> ...
+	// from preset patterns ${_}, <<_>> ...
 	.AddPresetPattern("${_}")
 	// set how many time config will be injected to resolve circular dependencies
 	.SetReplaceRepeatCount(10)
