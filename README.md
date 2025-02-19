@@ -3,7 +3,15 @@
 `KutCode.KeyInject` is a .NET library designed to inject values into configurations using regular expression patterns, with support for nested patterns. This facilitates dynamic and flexible configuration management in .NET applications.
 
 <h2 id="toc">📋 Table of contents</h2>
-//
+- [🧩 Features](#features)  
+- [📜 Installation](#installation)  
+- [🚀 Quick Start](#quick-start)  
+  - [Basic example](#basic-example)  
+- [⚙️ Basic Configuration](#basic-config)  
+- [🎭 Patterns](#patterns)  
+- [🪆 Nested patterns](#nested-patterns)  
+- [💉 Dependency Injection](#di)  
+- [☕ Contribution](#contribution)  
 
 <h2 id="features">🧩 Features</h2>
 
@@ -29,9 +37,11 @@ dotnet add package KutCode.KeyInject
 All versions can be found [here](https://www.nuget.org/packages/KutCode.KeyInject/).
 
 <h2 id="quick-start">🚀 Quick Start</h2>
+
 See actual examples here [./examples](./examples);
 
 <h3 id="basic-example">Basic example</h3>
+
 ```csharp
 using KeyInject;
 
@@ -58,6 +68,7 @@ It's not neccessary to provide json configuration.
 By default, `${_}` pattern will be used. _(All the patterns will be described below)_
 
 <h4 id="example-configuration">Example configuration</h4>
+
 ```json
 {
   "KeyInject": {
@@ -97,28 +108,30 @@ Pattern like `"${...}"` instead of `${_}` is not supported!
 Of course, you can use multiple patterns at the same time.
 
 <h3 id="custom-patterns">🔧 Custom patterns</h3>
+
 You can use custom Regex patterns with builder or appsettings configuration.  
 You must to specify `?<key>` regex group in pattern, like:
-```regexp
+```regexp  
 !\{(?<key>[^{}]+)\}!
 ```
 ⚠️ Group naming must be exactly - `key`.
 
 
 <h2 id="nested-patterns">🪆 Nested patterns</h2>
+
 You can use nested patterns, here is an example of nesting:
-```json
+```json  
 // in appsettings.json
 {
   "Connection": "${CONN}"
 }
 ```
 In Environment variable:
-```text
+```text  
 CONN="server=${DB_IP};user=${DB_USER};password=${DB_PASSWORD}"
 ```
 In Vault config sourcer (or any other):
-```text
+```text  
 DB_IP=1.2.3.4
 DB_USER=rootuser
 DB_PASSWORD=password123
@@ -141,6 +154,7 @@ or with `appsettings.json`:
 ```
 
 <h2 id="di">💉 Dependency Injection</h2>
+
 ⚠️ Warning!  
 Use `.AddKeyInject()` after adding other Configuration Provides!
 Example:
@@ -167,6 +181,7 @@ builder.Configuration.AddKeyInject(b => b
 ```
 
 <h2 id="contribution">☕ Contribution</h2>
-If you wanna to buy me a coffee, send any tokens in TON network:  
+
+If you wanna to buy me a coffee 😃, I will be grateful for any tokens in TON network:  
 💎 `noncommunicado.ton`  
 💎 `UQD0zFgp0p-eFnbL4cPA6DYqoeWzGbCA81KuU6BKwdFmf8jv`
