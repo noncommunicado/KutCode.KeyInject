@@ -3,6 +3,8 @@
 	<span>KeyInject</span>
 </h1>
 
+<img src="https://img.shields.io/github/v/tag/noncommunicado/KutCode.KeyInject?include_prereleases&style=flat&label=Version&color=darkgreen" />
+
 `KeyInject` is a .NET library designed to inject values into configurations using regular expression patterns, with support for nested patterns.   
 This facilitates dynamic and flexible configuration management in .NET applications.
 
