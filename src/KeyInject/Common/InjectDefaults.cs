@@ -5,7 +5,7 @@ namespace KeyInject.Common;
 /// <summary>
 /// Default values of many part of package
 /// </summary>
-internal sealed class InjectDefaults
+public sealed class InjectDefaults
 {
 	public const string RegexInjectionGroupKey = "key";
 	public const string RegexPatternPlaceholder = "_";
@@ -20,7 +20,7 @@ internal sealed class InjectDefaults
 	};
 	public static Regex DefaultRegex => PresetPatterns[DefaultRegexPatternRaw];
 	public const string DefaultConfigurationSectionName = "KeyInject";
-	
+
 	/// <summary>
 	/// Enough to cover greater part of nested keys.
 	/// </summary>

@@ -13,5 +13,6 @@ public interface IKeyInjectConfigurationBuilder
 	IKeyInjectConfigurationBuilder AddKeyPrefix(string prefix);
 	IKeyInjectConfigurationBuilder AddRegexPattern(Regex pattern);
 	IKeyInjectConfigurationBuilder AddRegexPattern(string pattern);
+	IKeyInjectConfigurationBuilder AddPresetPattern(string presetPattern);
 	KeyInjectConfiguration Build();
 }

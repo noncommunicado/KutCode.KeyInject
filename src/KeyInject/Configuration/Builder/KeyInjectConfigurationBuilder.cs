@@ -64,7 +64,15 @@ public sealed class KeyInjectConfigurationBuilder(IConfiguration configuration) 
 		_rawRegexPatterns.Add(pattern);
 		return this;
 	}
-	
+
+	public IKeyInjectConfigurationBuilder AddPresetPattern(string presetPattern)
+	{
+		if (string.IsNullOrWhiteSpace(presetPattern)) return this;
+		if (InjectDefaults.PresetPatterns.TryGetValue(presetPattern.Trim(), out var regex))
+			_configurationResult.RegexPatterns.Add(regex);
+		return this;
+	}
+
 	public KeyInjectConfiguration Build()
 	{
 		EnrichFromAppSettings();

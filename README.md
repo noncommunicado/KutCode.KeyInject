@@ -48,6 +48,21 @@ See actual examples here [./examples](./examples);
 
 <h3 id="basic-example">Basic example</h3>
 
+In `appsettings.json`:
+```json
+{
+  "ConnectionStrings": {
+    "Main": "server=${SERVER};user=${DB_USER};password=${DB_PASSWORD}"
+  }
+}
+```
+In Environment variables we got:
+```env
+SERVER=1.4.8.8
+DB_USER=root-user
+DB_PASSWORD=12345qwe_dontdothat
+```
+In `Program.cs` file:
 ```csharp
 using KeyInject;
 
@@ -57,12 +72,17 @@ var builder = WebApplication.CreateBuilder(args);
 // Remember, that ConfigurationProviders overrides each other!
 builder.Configuration.AddJsonFile("appsettings.json");
 builder.Configuration.AddEnvironmentVariables();
-builder.Configuration.AddVault();
 // ✅ Add Key Injection exactly at the latest position 
 builder.Configuration.AddKeyInject();
 
+// add services ...
+
 var app = builder.Build();
-// ... any app logic
+
+var conn = app.Configuration.GetConnectionString("Main");
+await Console.Out.WriteLineAsync(conn);
+// output: server=1.4.8.8;user=root-user;password=12345qwe_dontdothat
+
 await app.RunAsync();
 ```
 
@@ -71,7 +91,8 @@ await app.RunAsync();
 
 KeyInject always enriches from `appsettings.json`.  
 It's not neccessary to provide json configuration.  
-By default, `${_}` pattern will be used. _(All the patterns will be described below)_
+By default, `${_}` pattern will be used __if no other patterns provided__.  
+_(All the patterns will be described below)_
 
 <h4 id="example-configuration">Example configuration</h4>
 
@@ -98,15 +119,25 @@ Extended configuration see in [💉 Dependency Injection](#di) part.
 <h3 id="preset-patterns">Preset patterns</h3>
 
 By default few patterns are supported:
-```text
-pattern/regex
-${_}    -   \$\{(?<key>[^\{\}]+)\}
-{{_}}   -   \{\{(?<key>[^\{\}]+)\}\}
-$<_>    -   \$<(?<key>[^<>]+)>
-<<_>>   -   <<(?<key>[^<>]+)>>
-!{_}!   -   !\{(?<key>[^{}]+)\}!
-%_%     -   %(?<key>[^%]+)%
-```
+1. `${_}`
+  - regex: `\$\{(?<key>[^\{\}]+)\}`
+  - example: `${SOMEKEY}`, `${some_key_2}`
+2. `{{_}}`
+- regex: `\{\{(?<key>[^\{\}]+)\}\}`
+- example: `{{SOMEKEY}}`, `{{some_key_2}}`
+3. `$<_>`
+- regex: `\$<(?<key>[^<>]+)>`
+- example: `$<SOMEKEY>`, `$<some_key_2>`
+4. `<<_>>`
+- regex: `<<(?<key>[^<>]+)>>`
+- example: `<<SOMEKEY>>`, `<<some_key_2>>`
+5. `!{_}!`
+- regex: `!\{(?<key>[^{}]+)\}!`
+- example: `!{SOMEKEY}!`, `!{some_key_2}!`
+6. `%_%`
+- regex: `%(?<key>[^%]+)%`
+- example: `%SOMEKEY%`, `%some_key_2%`
+
   
 ⚠️ Notice! You must specify them exactly in provided format!  
 Pattern like `"${...}"` instead of `${_}` is not supported!  
@@ -182,6 +213,8 @@ builder.Configuration.AddKeyInject(b => b
 	.AddKeyPrefix("DATABASE_")
 	// adding custom regex pattern. Warn! Must to use ?<key> regex group, see documentation.
 	.AddRegexPattern(@"!\{(?<key>[^{}]+)\}!")
+	// from prest patterns ${_}, <<_>> ...
+	.AddPresetPattern("${_}")
 	// set how many time config will be injected to resolve circular dependencies
 	.SetReplaceRepeatCount(10)
 	// ignore case of pattern key group >> ${IgNore_Case_Of_thIs_woRD}
