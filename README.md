@@ -55,15 +55,22 @@ In `appsettings.json`:
 ```json
 {
   "ConnectionStrings": {
-    "Main": "server=${SERVER};user=${DB_USER};password=${DB_PASSWORD}"
+    "Main": "server=${Database:Server};user=${DB_USER};password=${DB_PASSWORD}"
   }
 }
 ```
 In Environment variables:
 ```env
-SERVER=1.4.8.8
-DB_USER=root-user
-DB_PASSWORD=12345qwe_dontdothat
+DB_USER=addy
+DB_PASSWORD=greenlover
+```
+In user secrets:
+```json
+{
+  "Database": {
+    "Server": "1.4.8.8"
+  }
+}
 ```
 In `Program.cs` file:
 ```csharp
@@ -84,7 +91,7 @@ var app = builder.Build();
 
 var conn = app.Configuration.GetConnectionString("Main");
 await Console.Out.WriteLineAsync(conn);
-// ✅ Output: server=1.4.8.8;user=root-user;password=12345qwe_dontdothat
+// ✅ Output: server=1.4.8.8;user=addy;password=greenlover
 
 await app.RunAsync();
 ```
