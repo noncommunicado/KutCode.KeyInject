@@ -10,13 +10,14 @@
         <PackageProjectUrl>https://github.com/noncommunicado/KutCode.KeyInject</PackageProjectUrl>
         <RepositoryUrl>https://github.com/noncommunicado/KutCode.KeyInject</RepositoryUrl>
         <PackageTags>KeyInject, Configuration, Placeholder, Replace</PackageTags>
-        <AssemblyVersion>1.0.0</AssemblyVersion>
-        <FileVersion>1.0.0</FileVersion>
+        <Version>1.0.1</Version>
+        <FileVersion>1.0.1</FileVersion>
+        <AssemblyVersion>1.0.1</AssemblyVersion>
         <NeutralLanguage>en</NeutralLanguage>
-        <Version>1.0.0</Version>
         <TargetFrameworks>net9.0;net8.0</TargetFrameworks>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PackageIcon>icon.png</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -26,14 +27,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="README.md" />
-      <Content Include="README.md">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Include="icon.png" Pack="true" PackagePath=""/>
-      <Content Include="icon.png">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-          <Pack>true</Pack>
-      </Content>
+        <None Include="openreadme.targets" Pack="true" PackagePath="build\openreadme.targets" />
+        <None Include="../../README.md" Pack="true" PackagePath="" />
+        <None Include="icon.png" Pack="true" PackagePath="" />
+            <Content Include="icon.png">
+                <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+                <Pack>true</Pack>
+            </Content>
     </ItemGroup>
 </Project>

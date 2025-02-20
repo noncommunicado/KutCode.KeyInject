@@ -1,0 +1,5 @@
+<Project>
+    <Target Name="OpenReadme" AfterTargets="Build">
+        <Exec Command="start README.md" Condition="Exists('README.md')" />
+    </Target>
+</Project>

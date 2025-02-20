@@ -1,3 +1,4 @@
+using System.Collections.Frozen;
 using System.Text.RegularExpressions;
 using KeyInject.Common;
 using KeyInject.Configuration.Models;
@@ -12,31 +13,55 @@ internal sealed class InjectionProcessor(KeyInjectConfiguration injectConfig)
 
 	public void Process(IConfigurationBuilder builder)
 	{
+		if (injectConfig.Enabled is false) return;
+
 		if (builder is not ConfigurationManager manager)
 			throw new ArgumentOutOfRangeException();
 
 		int counter = 0;
-		do {
+		while (counter < injectConfig.ReplaceRepeatCount) {
 			counter++;
 			Process(manager);
-		} while (counter < injectConfig.ReplaceRepeatCount);
+		}
 	}
 
-	public void Process(ConfigurationManager configurationManager)
+	/// <summary>
+	/// Find all parent and children (recursively) config sections with value.  
+	/// Section without value ignored (usually, it's parent sections).  
+	/// </summary>
+	internal Dictionary<string, IConfigurationSection> FlattenConfigurationSection(
+		IEnumerable<IConfigurationSection> sections,
+		Dictionary<string, IConfigurationSection>? collection = null)
 	{
-		if (injectConfig.Enabled is false) return;
+		Dictionary<string, IConfigurationSection> newCollection = collection ?? new();
+		foreach (var section in sections) {
+			var children = section.GetChildren() as IConfigurationSection[] 
+			               ?? section.GetChildren().ToArray();
+			if (children.NotEmptyOrNull())
+				FlattenConfigurationSection(children, newCollection);
+			if (section.Value is null) continue;
+			var key = injectConfig.IgnoreCase
+				? section.Path.ToLowerInvariant() : section.Path;
+			newCollection.Add(key, section);
+		}
+		return newCollection;
+	}
+	
+	private void Process(ConfigurationManager configurationManager)
+	{
 		// key -- config section
 		var sectionsByKeys =
-			FlattenConfigurationSection(configurationManager.GetChildren());
+			FlattenConfigurationSection(configurationManager.GetChildren())
+				.ToFrozenDictionary();
 		foreach (var section in sectionsByKeys)
 			foreach (var regex in injectConfig.RegexPatterns)
 				HandleRegex(regex, section, sectionsByKeys);
 	}
 
-	internal void HandleRegex(
+	private void HandleRegex(
 		Regex regex,
 		KeyValuePair<string, IConfigurationSection> section,
-		Dictionary<string, IConfigurationSection> sectionsByKeys)
+		FrozenDictionary<string, IConfigurationSection> sectionsByKeys)
 	{
 		if (string.IsNullOrEmpty(section.Value.Value)) return;
 		var matches = regex.Matches(section.Value.Value);
@@ -60,28 +85,5 @@ internal sealed class InjectionProcessor(KeyInjectConfiguration injectConfig)
 					.Replace(match.Value, configSection.Value);
 			}
 		}
-	}
-
-	/// <summary>
-	/// Find all parent and children (recursively) config sections with value.  
-	/// Section without value ignored (usually, it's parent sections).  
-	/// </summary>
-	internal Dictionary<string, IConfigurationSection> FlattenConfigurationSection(
-		IEnumerable<IConfigurationSection> sections,
-		Dictionary<string, IConfigurationSection>? collection = null)
-	{
-		Dictionary<string, IConfigurationSection> newCollection = collection ?? new();
-		foreach (var section in sections) {
-			var children = section.GetChildren() as IConfigurationSection[] 
-			               ?? section.GetChildren().ToArray();
-			if (children.NotEmptyOrNull())
-				FlattenConfigurationSection(children, newCollection);
-			if (section.Value is null) continue;
-			var key = injectConfig.IgnoreCase
-				? section.Path.ToLowerInvariant() : section.Path;
-			newCollection.Add(key, section);
-		}
-
-		return newCollection;
 	}
 }
