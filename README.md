@@ -371,7 +371,7 @@ info: KeyInject.Injection.InjectionProcessor[0]
 ```
 
 > 💡 The logging configuration is optional.  
-> You don't have to pass the `AddKeyInject()` calling without parameters.
+> You don't have to pass `ILoggerFactory` to the `AddKeyInject()`, just call without parameters if logging is not needed.
 
 <h2 id="contribution">☕ Contribution</h2>
 
