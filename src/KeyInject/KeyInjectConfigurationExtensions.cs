@@ -1,4 +1,5 @@
 using KeyInject.Configuration.Builder;
+using Microsoft.Extensions.Logging;
 
 namespace KeyInject;
 
@@ -9,11 +10,10 @@ public static class KeyInjectConfigurationExtensions
 	/// Default configuration includes ${_} pattern and 5 cycles.
 	/// </summary>
 	public static IConfigurationBuilder AddKeyInject(
-		this IConfigurationBuilder manager)
+		this IConfigurationBuilder manager,
+		ILoggerFactory? loggerFactory = null)
 	{
-		var configuration = manager.Build();
-		var injectBuilder = new KeyInjectConfigurationBuilder(configuration);
-		return manager.Add(new KeyInjectConfigurationSource(injectBuilder.Build()));
+		return AddKeyInject(manager, x => x, loggerFactory);
 	}
 	
 	/// <summary>
@@ -22,12 +22,15 @@ public static class KeyInjectConfigurationExtensions
 	/// </summary>
 	public static IConfigurationBuilder AddKeyInject(
 		this IConfigurationBuilder manager,
-		Func<IKeyInjectConfigurationBuilder, IKeyInjectConfigurationBuilder> builder)
+		Func<IKeyInjectConfigurationBuilder, IKeyInjectConfigurationBuilder> builder,
+		ILoggerFactory? loggerFactory = null)
 	{
 		var configuration = manager.Build();
 		var injectBuilder = new KeyInjectConfigurationBuilder(configuration);
 		return manager.Add(new KeyInjectConfigurationSource(
-			builder.Invoke(injectBuilder).Build())
+				builder.Invoke(injectBuilder).Build(),
+				loggerFactory
+			)
 		);
 	}
 }

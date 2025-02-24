@@ -1,11 +1,21 @@
 using KeyInject.Configuration.Models;
+using Microsoft.Extensions.Logging;
 
 namespace KeyInject;
 
-public sealed class KeyInjectConfigurationSource(KeyInjectConfiguration configuration) : IConfigurationSource
+public sealed class KeyInjectConfigurationSource : IConfigurationSource
 {
-	public IConfigurationProvider Build(IConfigurationBuilder builder)
-	{
-		return new KeyInjectConfigurationProvider(configuration, builder);
-	}
+    private readonly KeyInjectConfiguration _configuration;
+    private readonly ILoggerFactory? _loggerFactory;
+
+    public KeyInjectConfigurationSource(KeyInjectConfiguration configuration, ILoggerFactory? loggerFactory = null)
+    {
+        _configuration = configuration;
+        _loggerFactory = loggerFactory;
+    }
+
+    public IConfigurationProvider Build(IConfigurationBuilder builder)
+    {
+        return new KeyInjectConfigurationProvider(_configuration, builder, _loggerFactory);
+    }
 }

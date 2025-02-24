@@ -1,89 +1,1 @@
-using System.Collections.Frozen;
-using System.Text.RegularExpressions;
-using KeyInject.Common;
-using KeyInject.Configuration.Models;
-
-namespace KeyInject.Injection;
-
-internal sealed class InjectionProcessor(KeyInjectConfiguration injectConfig)
-{
-	private readonly InjectStringComparer _stringComparer = new(injectConfig);
-
-	public static InjectionProcessor Create(KeyInjectConfiguration injectConfig) => new(injectConfig);
-
-	public void Process(IConfigurationBuilder builder)
-	{
-		if (injectConfig.Enabled is false) return;
-
-		if (builder is not ConfigurationManager manager)
-			throw new ArgumentOutOfRangeException();
-
-		int counter = 0;
-		while (counter < injectConfig.ReplaceRepeatCount) {
-			counter++;
-			Process(manager);
-		}
-	}
-
-	/// <summary>
-	/// Find all parent and children (recursively) config sections with value.  
-	/// Section without value ignored (usually, it's parent sections).  
-	/// </summary>
-	internal Dictionary<string, IConfigurationSection> FlattenConfigurationSection(
-		IEnumerable<IConfigurationSection> sections,
-		Dictionary<string, IConfigurationSection>? collection = null)
-	{
-		Dictionary<string, IConfigurationSection> newCollection = collection ?? new();
-		foreach (var section in sections) {
-			var children = section.GetChildren() as IConfigurationSection[] 
-			               ?? section.GetChildren().ToArray();
-			if (children.NotEmptyOrNull())
-				FlattenConfigurationSection(children, newCollection);
-			if (section.Value is null) continue;
-			var key = injectConfig.IgnoreCase
-				? section.Path.ToLowerInvariant() : section.Path;
-			newCollection.Add(key, section);
-		}
-		return newCollection;
-	}
-	
-	private void Process(ConfigurationManager configurationManager)
-	{
-		// key -- config section
-		var sectionsByKeys =
-			FlattenConfigurationSection(configurationManager.GetChildren())
-				.ToFrozenDictionary();
-		foreach (var section in sectionsByKeys)
-			foreach (var regex in injectConfig.RegexPatterns)
-				HandleRegex(regex, section, sectionsByKeys);
-	}
-
-	private void HandleRegex(
-		Regex regex,
-		KeyValuePair<string, IConfigurationSection> section,
-		FrozenDictionary<string, IConfigurationSection> sectionsByKeys)
-	{
-		if (string.IsNullOrEmpty(section.Value.Value)) return;
-		var matches = regex.Matches(section.Value.Value);
-		foreach (Match match in matches) {
-			var presentedInMatch = match.Groups
-				.TryGetValue(InjectDefaults.RegexInjectionGroupKey, out var keyGroup);
-			if (presentedInMatch is false) continue;
-			// cleared key: "${Some_Key}" --> "Some_Key"
-			var key = injectConfig.IgnoreCase 
-				? keyGroup!.Value.ToLowerInvariant() : keyGroup!.Value;
-			// check for prefixe satisfy if presented
-			var prefixFilter =  injectConfig.KeyPrefixes.IsNullOrEmpty() || 
-				injectConfig.KeyPrefixes.Any(x 
-						=> key.StartsWith(x, _stringComparer.StringComparison)
-					);
-			if (prefixFilter is false) continue;
-			// finally, string replacement
-			if (sectionsByKeys.TryGetValue(key, out var configSection)) {
-				if (string.IsNullOrEmpty(configSection.Value)) continue;
-				section.Value.Value = section.Value.Value
-					.Replace(match.Value, configSection.Value);
-			}
-		}
-	}
-}
+using System.Collections.Frozen;using System.Text.RegularExpressions;using KeyInject.Common;using KeyInject.Configuration.Models;using Microsoft.Extensions.Logging;namespace KeyInject.Injection;internal sealed class InjectionProcessor{    private readonly ILogger? _logger;    private readonly KeyInjectConfiguration _injectConfig;    private readonly InjectStringComparer _stringComparer;    public static InjectionProcessor Create(KeyInjectConfiguration injectConfig, ILoggerFactory? loggerFactory = null)         => new(injectConfig, loggerFactory);    public InjectionProcessor(KeyInjectConfiguration injectConfig, ILoggerFactory? loggerFactory = null)     {        _injectConfig = injectConfig;        _stringComparer = new InjectStringComparer(injectConfig);        _logger = loggerFactory?.CreateLogger<InjectionProcessor>();    }    public void Process(IConfigurationBuilder builder)    {        if (_injectConfig.Enabled is false) {            _logger?.LogInformation("KeyInject is disabled globally, check configuration if this behaviour is incorrect");            return;        }        _logger?.LogInformation("KeyInject starting process configuration");        _logger?.LogInformation("KeyInject configuration: {0}", _injectConfig);        if (builder is not ConfigurationManager manager)            throw new ArgumentOutOfRangeException();        _logger?.LogInformation("Found configuraion sources:{0}{1}", Environment.NewLine,            string.Join(Environment.NewLine, manager.Sources                .Select(x => "\t" + x)                .Distinct())        );        var counter = 0;        while (counter < _injectConfig.ReplaceRepeatCount) {            counter++;            Process(manager);        }    }    /// <summary>    /// Find all parent and children (recursively) config sections with value.      /// Section without value ignored (usually, it's parent sections).      /// </summary>    internal Dictionary<string, IConfigurationSection> FlattenConfigurationSection(        IEnumerable<IConfigurationSection> sections,        Dictionary<string, IConfigurationSection>? collection = null)    {        var newCollection =            collection ?? new Dictionary<string, IConfigurationSection>();        foreach (var section in sections) {            var children = section.GetChildren() as IConfigurationSection[]                           ?? section.GetChildren().ToArray();            if (children.NotEmptyOrNull())                FlattenConfigurationSection(children, newCollection);            if (section.Value is null) continue;            var key = _injectConfig.IgnoreCase                ? section.Path.ToLowerInvariant()                : section.Path;            newCollection.Add(key, section);        }        return newCollection;    }    private void Process(ConfigurationManager configurationManager)    {        // key -- config section        var sectionsByKeys =            FlattenConfigurationSection(configurationManager.GetChildren())                .ToFrozenDictionary();        foreach (var section in sectionsByKeys)        foreach (var regex in _injectConfig.RegexPatterns)            HandleRegex(regex, section, sectionsByKeys);    }    private void HandleRegex(        Regex regex,        KeyValuePair<string, IConfigurationSection> section,        FrozenDictionary<string, IConfigurationSection> sectionsByKeys)    {        if (string.IsNullOrEmpty(section.Value.Value)) return;        var matches = regex.Matches(section.Value.Value);        foreach (Match match in matches) {            var presentedInMatch = match.Groups                .TryGetValue(InjectDefaults.RegexInjectionGroupKey, out var keyGroup);            if (presentedInMatch is false) continue;            // cleared key: "${Some_Key}" --> "Some_Key"            var key = _injectConfig.IgnoreCase                ? keyGroup!.Value.ToLowerInvariant()                : keyGroup!.Value;            // check for prefixe satisfy if presented            var prefixFilter = _injectConfig.KeyPrefixes.IsNullOrEmpty() ||                               _injectConfig.KeyPrefixes.Any(x                                   => key.StartsWith(x, _stringComparer.StringComparison)                               );            if (prefixFilter is false) continue;            // finally, string replacement            if (sectionsByKeys.TryGetValue(key, out var sourceSection)) {                if (string.IsNullOrEmpty(sourceSection.Value)) continue;                _logger?.LogInformation("Replaced key: {0}", match.Value);                section.Value.Value = section.Value.Value                    .Replace(match.Value, sourceSection.Value);            }        }    }}
