@@ -5,7 +5,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("appsettings.json");
 // in development, from launchSettings.json
 builder.Configuration.AddEnvironmentVariables();
-builder.Configuration.AddKeyInject();
+builder.Configuration.AddKeyInject(
+    LoggerFactory.Create(b => b
+        .SetMinimumLevel(LogLevel.Debug)
+        .AddConsole()
+        .AddDebug())
+);
 
 var app = builder.Build();
 

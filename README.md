@@ -19,6 +19,7 @@ This facilitates dynamic and flexible configuration management in .NET applicati
 - [🎭 Patterns](#patterns)
 - [🪆 Nested patterns](#nested-patterns)
 - [💉 Dependency Injection](#di)
+- [🪵 Logging](#logging)
 - [☕ Contribution](#contribution)
 
 
@@ -334,6 +335,43 @@ builder.Configuration.AddKeyInject(b => b
 	.EnrichFromAppSettings(c => c.GetSection("MyCustomSection"))
 );
 ```
+
+<h2 id="logging">🪵 Logging</h2>
+
+You can add logging to log configuration sources and replaced keys.  
+Simply pass `ILoggerFactory`, example:  
+```csharp
+var builder = WebApplication.CreateBuilder(args);
+// ... other config sources ...
+builder.Configuration.AddKeyInject(LoggerFactory.Create(b => b
+    .SetMinimumLevel(LogLevel.Debug)
+    .AddConsole()
+    .AddDebug())
+);
+```
+Console output example:
+```text
+info: KeyInject.Injection.InjectionProcessor[0]
+      KeyInject starting process configuration
+info: KeyInject.Injection.InjectionProcessor[0]
+      KeyInject configuration: {"Enabled":true,"ReplaceRepeatCount":5,"IgnoreCase":false,"KeyPrefixes":[],"RegexPatterns":["\\$\\{(?\u003Ckey\u003E[^\\{\\}]\u002B)\\}"]}
+info: KeyInject.Injection.InjectionProcessor[0]
+      Found configuraion sources:
+        Microsoft.Extensions.Configuration.Memory.MemoryConfigurationSource
+        Microsoft.Extensions.Configuration.EnvironmentVariables.EnvironmentVariablesConfigurationSource
+        Microsoft.Extensions.Configuration.Json.JsonConfigurationSource
+        Microsoft.Extensions.Configuration.ChainedConfigurationSource
+        KeyInject.KeyInjectConfigurationSource
+info: KeyInject.Injection.InjectionProcessor[0]
+      Replaced key: ${SERVER}
+info: KeyInject.Injection.InjectionProcessor[0]
+      Replaced key: ${DB_USER}
+info: KeyInject.Injection.InjectionProcessor[0]
+      Replaced key: ${DB_PASSWORD}
+```
+
+> 💡 The logging configuration is optional.  
+> You don't have to pass the `AddKeyInject()` calling without parameters.
 
 <h2 id="contribution">☕ Contribution</h2>
 

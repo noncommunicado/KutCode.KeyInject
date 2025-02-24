@@ -1,6 +1,7 @@
 using FluentAssertions;
 using KeyInject.Common;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace KeyInject.Integration.Tests;
 
@@ -26,7 +27,13 @@ public sealed class SimpleInjectionTests
 			})
 			.AddEnvironmentVariables()
 			.AddJsonFile("appsettings.json")
-			.AddKeyInject()
+			.AddKeyInject(LoggerFactory.Create(builder =>
+			{
+				builder
+					.SetMinimumLevel(LogLevel.Debug)
+					.AddConsole()
+					.AddDebug();
+			}))
 			.Build();
 	}
 

@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using KeyInject.Common;
 
@@ -22,4 +23,9 @@ public sealed record KeyInjectConfiguration
 	public List<Regex> RegexPatterns { get; set; } = new();
 
 	public static KeyInjectConfiguration Default => new();
+
+	public override string ToString() => JsonSerializer.Serialize(new {
+		Enabled, ReplaceRepeatCount, IgnoreCase, KeyPrefixes,
+		RegexPatterns = RegexPatterns.Select(x => x.ToString()).ToArray()
+	});
 }
