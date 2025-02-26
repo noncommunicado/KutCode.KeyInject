@@ -11,6 +11,7 @@ public interface IKeyInjectConfigurationBuilder
 	IKeyInjectConfigurationBuilder EnrichFromAppSettings(IConfiguration section);
 	IKeyInjectConfigurationBuilder EnrichFromAppSettings(Func<IConfiguration, IConfiguration> configurationFunc);
 	IKeyInjectConfigurationBuilder SetEnabled(bool isEnabled);
+	IKeyInjectConfigurationBuilder SetReloadEnabled(bool isReloadEnabled);
 	IKeyInjectConfigurationBuilder SetReplaceRepeatCount(int maxReplaceRepeatCount);
 	IKeyInjectConfigurationBuilder SetIgnoreCase(bool ignoreCase);
 	IKeyInjectConfigurationBuilder AddKeyPrefix(string prefix);

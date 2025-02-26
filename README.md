@@ -5,8 +5,9 @@
 
 <img src="https://img.shields.io/github/v/tag/noncommunicado/KutCode.KeyInject?include_prereleases&style=flat&label=Version&color=darkgreen" />
 
-`KeyInject` is a .NET library designed to inject values into configurations using regular expression patterns, with support for nested patterns.   
-This facilitates dynamic and flexible configuration management in .NET applications.
+📦 `KeyInject` is a .NET library designed to inject values into configurations using regular expression patterns, with support for nested patterns.  
+⚙️ This facilitates dynamic and flexible configuration management in .NET applications.  
+🔄 Configuration hot-reloads **supported**.
 
 <h2 id="toc">📋 Table of contents</h2>
 
@@ -112,6 +113,8 @@ _(All the patterns will be described below)_
   "KeyInject": {
     // simply enable or disable globally 
     "Enabled": true,
+    // allows to reload configuration if other Configuration Provides triggers OnReload()
+    "SetReloadEnabled": true,
     // ignore case of pattern key group >> ${IgNore_Case_Of_thIs_woRD}
     "IgnoreCase": true,
     // set how many time config will be injected to resolve circular dependencies
@@ -315,6 +318,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddKeyInject(b => b
 	// simply enable or disable globally 
 	.SetEnabled(true)
+    // allows to reload configuration if other Configuration Provides triggers OnReload()
+    .SetReloadEnabled(true)
 	// adding custom prefixes
 	.AddKeyPrefix("PRE_")
 	.AddKeyPrefix("DATABASE_")
@@ -354,20 +359,23 @@ Console output example:
 info: KeyInject.Injection.InjectionProcessor[0]
       KeyInject starting process configuration
 info: KeyInject.Injection.InjectionProcessor[0]
-      KeyInject configuration: {"Enabled":true,"ReplaceRepeatCount":5,"IgnoreCase":false,"KeyPrefixes":[],"RegexPatterns":["\\$\\{(?\u003Ckey\u003E[^\\{\\}]\u002B)\\}"]}
+      KeyInject configuration: {"Enabled":true,"ReplaceRepeatCount":5,"IgnoreCase":true,"KeyPrefixes":[],"RegexPatterns":["\\$\\{(?\u003Ckey\u003E[^\\{\\}]\u002B)\\}"]}
 info: KeyInject.Injection.InjectionProcessor[0]
-      Found configuraion sources:
-        Microsoft.Extensions.Configuration.Memory.MemoryConfigurationSource
-        Microsoft.Extensions.Configuration.EnvironmentVariables.EnvironmentVariablesConfigurationSource
-        Microsoft.Extensions.Configuration.Json.JsonConfigurationSource
-        Microsoft.Extensions.Configuration.ChainedConfigurationSource
-        KeyInject.KeyInjectConfigurationSource
+      Found configuraion providers:
+        MemoryConfigurationProvider
+        EnvironmentVariablesConfigurationProvider Prefix: 'ASPNETCORE_'
+        EnvironmentVariablesConfigurationProvider Prefix: 'DOTNET_'
+        JsonConfigurationProvider for 'appsettings.json' (Optional)
+        JsonConfigurationProvider for 'appsettings.Development.json' (Optional)
+        EnvironmentVariablesConfigurationProvider
+        Microsoft.Extensions.Configuration.ChainedConfigurationProvider
+        JsonConfigurationProvider for 'appsettings.json' (Required)
 info: KeyInject.Injection.InjectionProcessor[0]
-      Replaced key: ${SERVER}
+      For key [ConnectionStrings:Main] made [3] replacements 
 info: KeyInject.Injection.InjectionProcessor[0]
-      Replaced key: ${DB_USER}
+      For key [ConnectionStrings:Some:Data:Key-3] made [1] replacements 
 info: KeyInject.Injection.InjectionProcessor[0]
-      Replaced key: ${DB_PASSWORD}
+      Configuration loaded
 ```
 
 > 💡 The logging configuration is optional.  

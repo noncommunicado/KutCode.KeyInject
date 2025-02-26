@@ -12,6 +12,11 @@ public sealed record KeyInjectConfigurationAppSettings
 	/// </summary>
 	[DefaultValue(true)]
 	public bool Enabled { get; init; } = true;
+	/// <summary>
+	/// Allows to reload configuration if other Configuration Provides triggers OnReload()
+	/// </summary>
+	[DefaultValue(true)]
+	public bool ReloadEnabled { get; set; } = true;
 	public int? ReplaceRepeatCount { get; init; }
 	public bool? IgnoreCase { get; init; }
 	public string[]? KeyPrefixes { get; init; }

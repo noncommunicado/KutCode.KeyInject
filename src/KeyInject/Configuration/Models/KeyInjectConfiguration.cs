@@ -12,7 +12,13 @@ public sealed record KeyInjectConfiguration
 	/// </summary>
 	[DefaultValue(true)]
 	public bool Enabled { get; set; } = true;
-	
+
+	/// <summary>
+	/// Allows to reload configuration if other Configuration Provides triggers OnReload()
+	/// </summary>
+	[DefaultValue(true)]
+	public bool ReloadEnabled { get; set; } = true;
+
 	private int _replaceRepeatCount = InjectDefaults.DefaultReplacementIterationsCount;
 	public int ReplaceRepeatCount {
 		get => _replaceRepeatCount;
