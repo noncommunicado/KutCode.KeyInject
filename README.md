@@ -5,8 +5,9 @@
 
 <img src="https://img.shields.io/github/v/tag/noncommunicado/KutCode.KeyInject?include_prereleases&style=flat&label=Version&color=darkgreen" />
 
-`KeyInject` is a .NET library designed to inject values into configurations using regular expression patterns, with support for nested patterns.   
-This facilitates dynamic and flexible configuration management in .NET applications.
+📦 `KeyInject` is a .NET library designed to inject values into configurations using regular expression patterns, with support for nested patterns.  
+⚙️ This facilitates dynamic and flexible configuration management in .NET applications.  
+🔄 Configuration hot-reloads **supported**.
 
 <h2 id="toc">📋 Table of contents</h2>
 
@@ -112,6 +113,8 @@ _(All the patterns will be described below)_
   "KeyInject": {
     // simply enable or disable globally 
     "Enabled": true,
+    // allows to reload configuration if other Configuration Provides triggers OnReload()
+    "SetReloadEnabled": true,
     // ignore case of pattern key group >> ${IgNore_Case_Of_thIs_woRD}
     "IgnoreCase": true,
     // set how many time config will be injected to resolve circular dependencies
@@ -315,6 +318,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddKeyInject(b => b
 	// simply enable or disable globally 
 	.SetEnabled(true)
+    // allows to reload configuration if other Configuration Provides triggers OnReload()
+    .SetReloadEnabled(true)
 	// adding custom prefixes
 	.AddKeyPrefix("PRE_")
 	.AddKeyPrefix("DATABASE_")

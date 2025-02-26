@@ -2,10 +2,12 @@ using KeyInject;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.AddJsonFile("appsettings.json");
+builder.Configuration.AddJsonFile("appsettings.json", false, true);
 // in development, from launchSettings.json
 builder.Configuration.AddEnvironmentVariables();
 builder.Configuration.AddKeyInject(
+    kb => kb
+        .SetIgnoreCase(true),
     LoggerFactory.Create(b => b
         .SetMinimumLevel(LogLevel.Debug)
         .AddConsole()
@@ -16,5 +18,6 @@ var app = builder.Build();
 
 // output: server=1.4.8.8;user=root-user;password=12345qwe_dontdothat
 await Console.Out.WriteLineAsync(app.Configuration.GetConnectionString("Main"));
+app.MapGet("/conn", async (IConfiguration config) => config.GetConnectionString("Main"));
 
-// app.Run();
+app.Run();

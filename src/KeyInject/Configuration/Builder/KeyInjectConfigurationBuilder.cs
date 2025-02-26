@@ -37,6 +37,13 @@ public sealed class KeyInjectConfigurationBuilder(IConfiguration configuration) 
 		_configurationResult.Enabled = isEnabled;
 		return this;
 	}
+
+	public IKeyInjectConfigurationBuilder SetReloadEnabled(bool isReloadEnabled)
+	{
+		_configurationResult.ReloadEnabled = isReloadEnabled;
+		return this;
+	}
+
 	public IKeyInjectConfigurationBuilder SetReplaceRepeatCount(int maxReplaceRepeatCount)
 	{
 		_configurationResult.ReplaceRepeatCount = maxReplaceRepeatCount;
