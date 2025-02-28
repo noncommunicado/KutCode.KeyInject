@@ -10,7 +10,7 @@ public sealed class KeyInjectConfigurationProvider : ConfigurationProvider, IDis
 	private readonly object _locker = new();
 	private readonly ILogger? _logger;
 	private readonly KeyInjectConfiguration _configuration;
-	private readonly IConfigurationBuilder _builder;
+	private readonly IConfigurationBuilder _manager;
 	private readonly InjectionProcessor _processor;
 	private IConfigurationRoot _configurationRoot;
 	private IDisposable? _changeTokenRegistration;
@@ -21,15 +21,14 @@ public sealed class KeyInjectConfigurationProvider : ConfigurationProvider, IDis
 
 	public KeyInjectConfigurationProvider(
 		KeyInjectConfiguration configuration,
-		IConfigurationBuilder builder,
+		IConfigurationManager manager,
 		ILoggerFactory? loggerFactory = null)
 	{
+		_manager = manager;
+		_configurationRoot = manager.Build();
 		_configuration = configuration;
-		_builder = builder;
 		_logger = loggerFactory?.CreateLogger<InjectionProcessor>();
 		_processor = new InjectionProcessor(configuration, this, _logger);
-
-		_configurationRoot = _builder.Build();
 	}
 
 	/// <summary>
