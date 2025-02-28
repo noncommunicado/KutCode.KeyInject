@@ -10,9 +10,9 @@
         <PackageProjectUrl>https://github.com/noncommunicado/KutCode.KeyInject</PackageProjectUrl>
         <RepositoryUrl>https://github.com/noncommunicado/KutCode.KeyInject</RepositoryUrl>
         <PackageTags>KeyInject, Configuration, Placeholder, Replace, ConfigurationProvider</PackageTags>
-        <Version>1.2.0</Version>
-        <FileVersion>1.2.0</FileVersion>
-        <AssemblyVersion>1.2.0</AssemblyVersion>
+        <Version>1.2.1</Version>
+        <FileVersion>1.2.1</FileVersion>
+        <AssemblyVersion>1.2.1</AssemblyVersion>
         <NeutralLanguage>en</NeutralLanguage>
         <TargetFrameworks>net9.0;net8.0</TargetFrameworks>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>

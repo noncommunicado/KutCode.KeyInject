@@ -16,6 +16,12 @@ public sealed class KeyInjectConfigurationSource : IConfigurationSource
 
     public IConfigurationProvider Build(IConfigurationBuilder builder)
     {
-        return new KeyInjectConfigurationProvider(_configuration, builder, _loggerFactory);
+        if (builder.GetType().IsAssignableTo(typeof(IConfigurationManager)) is false)
+            throw new TypeAccessException("Builder must be ConfigurationManager");
+        return new KeyInjectConfigurationProvider(
+            _configuration, 
+            (builder as IConfigurationManager)!,
+            _loggerFactory
+        );
     }
 }
