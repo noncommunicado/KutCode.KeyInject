@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <ImplicitUsings>enable</ImplicitUsings>
+        <ImplicitUsings>disable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>KeyInject - Configuration injection</Title>
@@ -10,11 +10,11 @@
         <PackageProjectUrl>https://github.com/noncommunicado/KutCode.KeyInject</PackageProjectUrl>
         <RepositoryUrl>https://github.com/noncommunicado/KutCode.KeyInject</RepositoryUrl>
         <PackageTags>KeyInject, Configuration, Placeholder, Replace, ConfigurationProvider</PackageTags>
-        <Version>1.2.2</Version>
-        <FileVersion>1.2.2</FileVersion>
-        <AssemblyVersion>1.2.2</AssemblyVersion>
+        <Version>1.3.0</Version>
+        <FileVersion>1.3.0</FileVersion>
+        <AssemblyVersion>1.3.0</AssemblyVersion>
         <NeutralLanguage>en</NeutralLanguage>
-        <TargetFrameworks>net9.0;net8.0</TargetFrameworks>
+        <TargetFrameworks>net9.0;net8.0;net7.0;net6.0;net5.0</TargetFrameworks>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PackageIcon>icon.png</PackageIcon>
         <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -30,10 +30,6 @@
     <ItemGroup>
         <None Include="openreadme.targets" Pack="true" PackagePath="build\openreadme.targets" />
         <None Include="../../README.md" Pack="true" PackagePath="" />
-        <None Include="icon.png" Pack="true" PackagePath="" />
-            <Content Include="icon.png">
-                <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-                <Pack>true</Pack>
-            </Content>
+        <None Include="icon.png" Pack="true" PackagePath="" Visible="false" />
     </ItemGroup>
 </Project>

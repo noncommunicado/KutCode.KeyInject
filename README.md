@@ -29,7 +29,7 @@
 - **Regex-Based Injection**: Utilize regular expressions to identify and replace placeholders in your configuration files.
 - **Nested Pattern Support**: Handle complex configurations with nested placeholders seamlessly.
 - **Easy Integration**: Designed for straightforward integration into existing .NET projects.
-- **Supported versions**: `net8.0` and `net9.0` and higher version supported
+- **Supported versions**: `net5.0` and higher version supported
 
 <h2 id="installation">📜 Installation</h2>
 

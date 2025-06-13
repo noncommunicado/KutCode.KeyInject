@@ -1,20 +1,28 @@
+using System;
 using KeyInject.Configuration.Models;
 
-namespace KeyInject.Common;
-
-internal sealed class InjectStringCompareConfiguration(KeyInjectConfiguration injectConfig)
+namespace KeyInject.Common
 {
-	public StringComparison StringComparison => injectConfig.IgnoreCase
-		? StringComparison.InvariantCultureIgnoreCase
-		: StringComparison.Ordinal;
-	
-	public StringComparer StringComparer => injectConfig.IgnoreCase
-		? StringComparer.InvariantCultureIgnoreCase
-		: StringComparer.Ordinal;
-	
-	public bool Compare(string left, string right)
+	internal sealed class InjectStringCompareConfiguration
 	{
-		if (string.IsNullOrEmpty(left) && string.IsNullOrEmpty(right)) return true;
-		return left.Equals(right, StringComparison);
+		private readonly KeyInjectConfiguration _injectConfig;
+		public InjectStringCompareConfiguration(KeyInjectConfiguration injectConfig)
+		{
+			_injectConfig = injectConfig;
+		}
+
+		public StringComparison StringComparison => _injectConfig.IgnoreCase
+			? StringComparison.InvariantCultureIgnoreCase
+			: StringComparison.Ordinal;
+	
+		public StringComparer StringComparer => _injectConfig.IgnoreCase
+			? StringComparer.InvariantCultureIgnoreCase
+			: StringComparer.Ordinal;
+	
+		public bool Compare(string left, string right)
+		{
+			if (string.IsNullOrEmpty(left) && string.IsNullOrEmpty(right)) return true;
+			return left.Equals(right, StringComparison);
+		}
 	}
 }

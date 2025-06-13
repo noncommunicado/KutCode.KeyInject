@@ -1,12 +1,13 @@
-namespace KeyInject.DependencyInjectionExample;
-
-public class ExampleService
+namespace KeyInject.DependencyInjectionExample
 {
-	private readonly IConfiguration _configuration;
-
-	public ExampleService(IConfiguration configuration)
+	public class ExampleService
 	{
-		_configuration = configuration;
+		private readonly IConfiguration _configuration;
+
+		public ExampleService(IConfiguration configuration)
+		{
+			_configuration = configuration;
+		}
+		public void Display() => Console.WriteLine(_configuration["key-1"]);
 	}
-	public void Display() => Console.WriteLine(_configuration["key-1"]);
 }
