@@ -19,6 +19,8 @@ var app = builder.Build();
 
 // output: server=1.4.8.8;user=root-user;password=12345qwe_dontdothat
 await Console.Out.WriteLineAsync(app.Configuration.GetConnectionString("Main"));
+await Console.Out.WriteLineAsync(app.Configuration["ConnectionStrings:Some:Data:Key-3"]);
+
 app.MapGet("/conn", async (IConfiguration config) => config.GetConnectionString("Main"));
 
 app.Run();
