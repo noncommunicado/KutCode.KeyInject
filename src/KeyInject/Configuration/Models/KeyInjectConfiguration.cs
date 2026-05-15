@@ -26,6 +26,17 @@ namespace KeyInject.Configuration.Models
 			get => _replaceRepeatCount;
 			set => _replaceRepeatCount = value > 0 ? value : 1;
 		}
+
+		/// <summary>
+		/// Replace null values;
+		/// For example, if ${Name} replacement value is null - ${Name} placeholder will be replaced to empty string;
+		/// </summary>
+		/// <example>
+		/// "name=${NAME}" --> "name="
+		/// </example>
+		[DefaultValue(true)]
+		public bool ReplaceNullValue { get; set; } = true;
+
 		public bool IgnoreCase { get; set; } = false;
 		public List<string> KeyPrefixes { get; set; } = new();
 		public List<Regex> RegexPatterns { get; set; } = new();

@@ -153,9 +153,13 @@ namespace KeyInject.Injection
                 
                 if (prefixFilter is false) continue;
                 // finally, string replacement
-                if (!configuration.TryGetValue(key, out var sourceValue)) continue;
-                if (string.IsNullOrEmpty(sourceValue)) continue;
-                value = value.Replace(match.Value, sourceValue);
+                if (!configuration.TryGetValue(key, out var sourceValue) && !_injectConfig.ReplaceNullValue)
+                    continue;
+
+                if (string.IsNullOrEmpty(sourceValue) && !_injectConfig.ReplaceNullValue)
+                    continue;
+
+                value = value.Replace(match.Value, sourceValue ?? string.Empty);
                 replacementsCounter++;
             }
 

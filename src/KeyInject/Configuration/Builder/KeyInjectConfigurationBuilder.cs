@@ -51,6 +51,12 @@ namespace KeyInject.Configuration.Builder
 			return this;
 		}
 
+		public IKeyInjectConfigurationBuilder SetReplaceNullValue(bool isReplaceNullValue)
+		{
+			_configurationResult.ReplaceNullValue = isReplaceNullValue;
+			return this;
+		}
+
 		public IKeyInjectConfigurationBuilder SetReloadEnabled(bool isReloadEnabled)
 		{
 			_configurationResult.ReloadEnabled = isReloadEnabled;
