@@ -28,8 +28,9 @@
 
 - **Regex-Based Injection**: Utilize regular expressions to identify and replace placeholders in your configuration files.
 - **Nested Pattern Support**: Handle complex configurations with nested placeholders seamlessly.
+- **ReplaceNullValue**: When enabled (default), missing or empty placeholder values are replaced with an empty string; when disabled, placeholders are left unchanged.
 - **Easy Integration**: Designed for straightforward integration into existing .NET projects.
-- **Supported versions**: `net5.0` and higher version supported
+- **Supported versions**: `net5.0` through `net10.0`
 
 <h2 id="installation">📜 Installation</h2>
 
@@ -119,6 +120,8 @@ _(All the patterns will be described below)_
     "IgnoreCase": true,
     // set how many time config will be injected to resolve circular dependencies
     "ReplaceRepeatCount": 10,
+    // replace null/missing values; "name=${NAME}" --> "name="
+    "ReplaceNullValue": true,
     // from preset patterns ${_}, <<_>> ...
     // if Patterns is empty, "${_}" pattern will be used anyway
     "Patterns": [
@@ -320,6 +323,8 @@ builder.Configuration.AddKeyInject(b => b
 	.SetEnabled(true)
     // allows to reload configuration if other Configuration Provides triggers OnReload()
     .SetReloadEnabled(true)
+    // keep placeholder when value is missing or empty
+    .SetReplaceNullValue(false)
 	// adding custom prefixes
 	.AddKeyPrefix("PRE_")
 	.AddKeyPrefix("DATABASE_")
